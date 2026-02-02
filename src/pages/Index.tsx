@@ -4,6 +4,7 @@ import {
   ShoppingCart, 
   Wallet, 
   Users,
+  Store,
   TrendingUp,
   FileSpreadsheet
 } from 'lucide-react';
@@ -109,7 +110,7 @@ const Index = () => {
                   <span className="w-1 h-5 bg-secondary rounded-full"></span>
                   Indicateurs Clés de Performance
                 </h2>
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6">
                   <KPICard
                     title="Chiffre d'Affaires Total"
                     value={`${formatCurrency(kpis.totalRevenue)} GNF`}
@@ -117,20 +118,24 @@ const Index = () => {
                     highlight
                   />
                   <KPICard
-                    title="Volume de Commandes"
+                    title="Nombre Total de Commandes"
                     value={kpis.totalOrders.toLocaleString('fr-FR')}
                     icon={ShoppingCart}
                   />
                   <KPICard
-                    title="Panier Moyen"
-                    value={`${formatCurrency(kpis.averageBasket)} GNF`}
-                    icon={Wallet}
+                    title="Clients Distincts"
+                    value={kpis.totalCustomers.toLocaleString('fr-FR')}
+                    icon={Users}
                   />
                   <KPICard
-                    title="Clients Actifs"
-                    value={kpis.activeCustomers.toLocaleString('fr-FR')}
-                    subtitle={`sur ${kpis.totalCustomers.toLocaleString('fr-FR')} utilisateurs`}
-                    icon={Users}
+                    title="Restaurants Partenaires"
+                    value={kpis.totalRestaurants.toLocaleString('fr-FR')}
+                    icon={Store}
+                  />
+                  <KPICard
+                    title="Panier Moyen Global"
+                    value={`${formatCurrency(kpis.averageBasket)} GNF`}
+                    icon={Wallet}
                   />
                 </div>
               </section>

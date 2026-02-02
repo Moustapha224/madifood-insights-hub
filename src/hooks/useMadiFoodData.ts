@@ -88,6 +88,7 @@ export function useMadiFoodData(): UseMadiFoodDataReturn {
         activeCustomers: 0,
         totalCustomers: 0,
         inactiveCustomers: 0,
+        totalRestaurants: 0,
       };
     }
     return calculateKPIs(filteredData, dateRange.start || undefined, dateRange.end || undefined);
