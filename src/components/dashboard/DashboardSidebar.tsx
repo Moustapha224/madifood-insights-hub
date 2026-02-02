@@ -11,6 +11,7 @@ import { DateRangeFilter } from './DateRangeFilter';
 import { RestaurantFilter } from './RestaurantFilter';
 import { cn } from '@/lib/utils';
 import type { DateRange } from '@/types/madifood';
+import madifoodLogo from '@/assets/madifood-logo.png';
 
 interface DashboardSidebarProps {
   onFileUpload: (file: File) => Promise<void>;
@@ -51,12 +52,16 @@ export function DashboardSidebar({
         'sidebar-brand',
         isCollapsed && 'justify-center px-2'
       )}>
-        <div className="sidebar-brand-logo">
-          M
-        </div>
+        <img 
+          src={madifoodLogo} 
+          alt="MadiFood" 
+          className={cn(
+            'object-contain',
+            isCollapsed ? 'w-10 h-10' : 'h-12'
+          )}
+        />
         {!isCollapsed && (
           <div>
-            <h1 className="sidebar-brand-text">MadiFood</h1>
             <p className="text-xs text-sidebar-foreground/60">Data Intelligence</p>
           </div>
         )}

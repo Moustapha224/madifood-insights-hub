@@ -62,6 +62,7 @@ export interface KPIData {
   activeCustomers: number;
   totalCustomers: number;
   inactiveCustomers: number;
+  totalRestaurants: number;
 }
 
 export interface MonthlyData {

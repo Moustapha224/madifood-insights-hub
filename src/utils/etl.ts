@@ -196,9 +196,7 @@ export async function processExcelFile(file: File): Promise<MadiFoodData> {
 // Calculate KPIs from data
 export function calculateKPIs(data: MadiFoodData, startDate?: Date, endDate?: Date) {
   // Filter orders by date range if provided
-  let filteredOrders = data.orders.filter(order => 
-    order.status === 'Terminée' || order.status === 'terminée' || order.status === 'Completed' || order.status === '4'
-  );
+  let filteredOrders = data.orders;
   
   if (startDate && endDate) {
     filteredOrders = filteredOrders.filter(order => {
@@ -207,16 +205,26 @@ export function calculateKPIs(data: MadiFoodData, startDate?: Date, endDate?: Da
     });
   }
   
+  // Total revenue = sum of all 'total' amounts from orders
   const totalRevenue = filteredOrders.reduce((sum, order) => sum + order.total, 0);
+  
+  // Total orders = count of orders (by orderId)
   const totalOrders = filteredOrders.length;
+  
+  // Average basket = total revenue / total orders
   const averageBasket = totalOrders > 0 ? totalRevenue / totalOrders : 0;
+  
+  // Unique customers from users table
+  const totalCustomers = new Set(data.users.map(u => u.id)).size;
+  
+  // Unique restaurants from orders
+  const uniqueRestaurants = new Set(data.orders.map(o => o.restaurantId).filter(id => id));
+  const totalRestaurants = uniqueRestaurants.size;
   
   // Active customers = unique customers who ordered in the filtered period
   const activeCustomerIds = new Set(filteredOrders.map(order => order.userId));
   const activeCustomers = activeCustomerIds.size;
   
-  // Total customers from users table
-  const totalCustomers = data.users.filter(u => !u.isDeleted).length;
   const inactiveCustomers = totalCustomers - activeCustomers;
   
   return {
@@ -226,6 +234,7 @@ export function calculateKPIs(data: MadiFoodData, startDate?: Date, endDate?: Da
     activeCustomers,
     totalCustomers,
     inactiveCustomers: Math.max(0, inactiveCustomers),
+    totalRestaurants,
   };
 }
 
