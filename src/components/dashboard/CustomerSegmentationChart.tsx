@@ -16,7 +16,7 @@ export function CustomerSegmentationChart({ kpis }: CustomerSegmentationChartPro
     { 
       name: 'Clients Inactifs', 
       value: kpis.inactiveCustomers, 
-      color: 'hsl(220, 9%, 46%)',
+      color: 'hsl(var(--muted-foreground))',
       description: 'Aucune commande sur la période'
     },
   ];
@@ -85,16 +85,17 @@ export function CustomerSegmentationChart({ kpis }: CustomerSegmentationChartPro
                 name
               ]}
               contentStyle={{
-                backgroundColor: 'hsl(0, 0%, 100%)',
-                border: '1px solid hsl(220, 13%, 91%)',
+                backgroundColor: 'hsl(var(--card))',
+                border: '1px solid hsl(var(--border))',
                 borderRadius: '0.75rem',
                 boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)',
+                color: 'hsl(var(--foreground))',
               }}
             />
             <Legend 
               verticalAlign="bottom"
               height={36}
-              formatter={(value: string, entry: any) => (
+              formatter={(value: string) => (
                 <span className="text-sm text-foreground">{value}</span>
               )}
             />
