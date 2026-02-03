@@ -194,6 +194,8 @@ export async function processExcelFile(file: File): Promise<MadiFoodData> {
 }
 
 // Calculate KPIs from data
+// Active customer = user whose id appears at least once in orders.userId
+// Inactive customer = user whose id never appears in orders.userId
 export function calculateKPIs(data: MadiFoodData, startDate?: Date, endDate?: Date) {
   // Filter orders by date range if provided
   let filteredOrders = data.orders;
@@ -214,17 +216,19 @@ export function calculateKPIs(data: MadiFoodData, startDate?: Date, endDate?: Da
   // Average basket = total revenue / total orders
   const averageBasket = totalOrders > 0 ? totalRevenue / totalOrders : 0;
   
-  // Unique customers from users table
-  const totalCustomers = new Set(data.users.map(u => u.id)).size;
+  // Total customers from users table (distinct user ids)
+  const allUserIds = new Set(data.users.map(u => u.id).filter(id => id));
+  const totalCustomers = allUserIds.size;
   
-  // Unique restaurants from orders
+  // Unique restaurants from all orders (not filtered by date)
   const uniqueRestaurants = new Set(data.orders.map(o => o.restaurantId).filter(id => id));
   const totalRestaurants = uniqueRestaurants.size;
   
-  // Active customers = unique customers who ordered in the filtered period
-  const activeCustomerIds = new Set(filteredOrders.map(order => order.userId));
+  // Active customers = users whose id appears at least once in filtered orders
+  const activeCustomerIds = new Set(filteredOrders.map(order => order.userId).filter(id => id));
   const activeCustomers = activeCustomerIds.size;
   
+  // Inactive customers = users whose id never appears in filtered orders
   const inactiveCustomers = totalCustomers - activeCustomers;
   
   return {
@@ -238,11 +242,11 @@ export function calculateKPIs(data: MadiFoodData, startDate?: Date, endDate?: Da
   };
 }
 
-// Get monthly revenue data
+// Get monthly revenue and orders data
+// Revenue = sum of 'total' column grouped by month from createdAtDate
+// Orders = count of orders (by orderId) grouped by month from createdAtDate
 export function getMonthlyData(data: MadiFoodData, startDate?: Date, endDate?: Date) {
-  let filteredOrders = data.orders.filter(order => 
-    order.status === 'Terminée' || order.status === 'terminée' || order.status === 'Completed' || order.status === '4'
-  );
+  let filteredOrders = data.orders;
   
   if (startDate && endDate) {
     filteredOrders = filteredOrders.filter(order => {
@@ -256,10 +260,14 @@ export function getMonthlyData(data: MadiFoodData, startDate?: Date, endDate?: D
   filteredOrders.forEach(order => {
     if (!order.createdAtDate) return;
     const date = new Date(order.createdAtDate);
+    if (isNaN(date.getTime())) return;
+    
     const monthKey = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}`;
     
     const current = monthlyMap.get(monthKey) || { revenue: 0, orders: 0 };
+    // Revenue = sum of total column
     current.revenue += order.total;
+    // Orders = count (each order counts as 1)
     current.orders += 1;
     monthlyMap.set(monthKey, current);
   });

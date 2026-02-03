@@ -13,8 +13,10 @@ import { KPICard } from '@/components/dashboard/KPICard';
 import { RevenueChart } from '@/components/dashboard/RevenueChart';
 import { OrdersChart } from '@/components/dashboard/OrdersChart';
 import { CustomerSegmentationChart } from '@/components/dashboard/CustomerSegmentationChart';
+import { ThemeToggle } from '@/components/ThemeToggle';
 import { useMadiFoodData } from '@/hooks/useMadiFoodData';
 import { cn } from '@/lib/utils';
+import madifoodLogo from '@/assets/madifood-logo.png';
 
 const Index = () => {
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
@@ -72,13 +74,23 @@ const Index = () => {
       >
         <div className="p-8">
           {/* Header */}
-          <header className="mb-8">
-            <h1 className="text-3xl font-bold text-foreground">
-              Data Intelligence
-            </h1>
-            <p className="text-muted-foreground mt-1">
-              Tableau de bord analytique MadiFood
-            </p>
+          <header className="mb-8 flex items-center justify-between">
+            <div className="flex items-center gap-4">
+              <img 
+                src={madifoodLogo} 
+                alt="MadiFood" 
+                className="h-12 object-contain"
+              />
+              <div>
+                <h1 className="text-2xl font-bold text-foreground">
+                  MadiFood
+                </h1>
+                <p className="text-muted-foreground text-sm">
+                  Tableau de bord analytique
+                </p>
+              </div>
+            </div>
+            <ThemeToggle />
           </header>
 
           {/* Empty State */}
