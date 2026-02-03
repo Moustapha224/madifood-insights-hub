@@ -43,7 +43,7 @@ export function DashboardSidebar({
   return (
     <aside 
       className={cn(
-        'fixed left-0 top-0 h-full bg-sidebar z-50 transition-all duration-300 flex flex-col',
+        'hidden lg:flex fixed left-0 top-0 h-full bg-sidebar z-50 transition-all duration-300 flex-col',
         isCollapsed ? 'w-16' : 'w-72'
       )}
     >

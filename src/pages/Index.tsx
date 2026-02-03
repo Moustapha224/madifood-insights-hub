@@ -9,6 +9,8 @@ import {
   FileSpreadsheet
 } from 'lucide-react';
 import { DashboardSidebar } from '@/components/dashboard/DashboardSidebar';
+import { MobileHeader } from '@/components/dashboard/MobileHeader';
+import { MobileSidebar } from '@/components/dashboard/MobileSidebar';
 import { KPICard } from '@/components/dashboard/KPICard';
 import { RevenueChart } from '@/components/dashboard/RevenueChart';
 import { OrdersChart } from '@/components/dashboard/OrdersChart';
@@ -20,6 +22,7 @@ import madifoodLogo from '@/assets/madifood-logo.png';
 
 const Index = () => {
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
+  const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false);
   
   const {
     data,
@@ -50,7 +53,28 @@ const Index = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      {/* Sidebar */}
+      {/* Mobile Header */}
+      <MobileHeader
+        isSidebarOpen={mobileSidebarOpen}
+        onToggleSidebar={() => setMobileSidebarOpen(!mobileSidebarOpen)}
+      />
+
+      {/* Mobile Sidebar */}
+      <MobileSidebar
+        isOpen={mobileSidebarOpen}
+        onClose={() => setMobileSidebarOpen(false)}
+        onFileUpload={uploadFile}
+        isLoading={isLoading}
+        error={error}
+        hasData={!!data}
+        dateRange={dateRange}
+        onDateRangeChange={setDateRange}
+        restaurants={availableRestaurants}
+        selectedRestaurants={selectedRestaurants}
+        onRestaurantsChange={setSelectedRestaurants}
+      />
+
+      {/* Desktop Sidebar */}
       <DashboardSidebar
         onFileUpload={uploadFile}
         isLoading={isLoading}
@@ -69,12 +93,13 @@ const Index = () => {
       <main 
         className={cn(
           'transition-all duration-300 min-h-screen',
-          sidebarCollapsed ? 'ml-16' : 'ml-72'
+          'pt-16 lg:pt-0', // Add padding for mobile header
+          sidebarCollapsed ? 'lg:ml-16' : 'lg:ml-72'
         )}
       >
-        <div className="p-8">
-          {/* Header - Soft separation in dark mode */}
-          <header className="mb-8 pb-6 border-b border-border/30 dark:border-white/5">
+        <div className="p-4 sm:p-6 lg:p-8">
+          {/* Header - Hidden on mobile, visible on desktop */}
+          <header className="hidden lg:block mb-8 pb-6 border-b border-border/30 dark:border-white/5">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-4">
                 <img 
@@ -94,6 +119,16 @@ const Index = () => {
               <ThemeToggle />
             </div>
           </header>
+
+          {/* Mobile Title */}
+          <div className="lg:hidden mb-6">
+            <h1 className="text-xl font-bold text-foreground tracking-tight">
+              MadiFood Analytics
+            </h1>
+            <p className="text-muted-foreground text-xs mt-0.5">
+              Vue analytique des performances
+            </p>
+          </div>
 
           {/* Empty State */}
           {!data && !isLoading && (
@@ -124,7 +159,7 @@ const Index = () => {
                   <span className="w-1 h-5 bg-secondary rounded-full"></span>
                   Indicateurs Clés de Performance
                 </h2>
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4 sm:gap-6">
                   <KPICard
                     title="Chiffre d'Affaires Total"
                     value={`${formatCurrency(kpis.totalRevenue)} GNF`}
@@ -160,7 +195,7 @@ const Index = () => {
                   <span className="w-1 h-5 bg-secondary rounded-full"></span>
                   Visualisations
                 </h2>
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <div className="grid grid-cols-1 xl:grid-cols-2 gap-4 sm:gap-6">
                   <RevenueChart data={monthlyData} />
                   <OrdersChart data={monthlyData} />
                 </div>
@@ -168,7 +203,7 @@ const Index = () => {
 
               {/* Customer Segmentation */}
               <section>
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <div className="grid grid-cols-1 xl:grid-cols-2 gap-4 sm:gap-6">
                   <CustomerSegmentationChart kpis={kpis} />
                   
                   {/* Data Summary Card */}
