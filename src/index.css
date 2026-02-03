@@ -69,33 +69,49 @@
   }
 
   .dark {
-    --background: 222 47% 6%;
-    --foreground: 220 14% 96%;
+    /* Soft Dark Mode - Blue Night Palette */
+    --background: 222 47% 7%;
+    --foreground: 220 20% 90%;
 
-    --card: 222 47% 9%;
-    --card-foreground: 220 14% 96%;
+    --card: 222 40% 12%;
+    --card-foreground: 220 20% 92%;
 
-    --popover: 222 47% 9%;
-    --popover-foreground: 220 14% 96%;
+    --popover: 222 40% 10%;
+    --popover-foreground: 220 20% 92%;
 
-    --primary: 24 95% 53%;
-    --primary-foreground: 222 47% 11%;
+    --primary: 24 90% 55%;
+    --primary-foreground: 222 47% 8%;
 
-    --secondary: 222 47% 16%;
-    --secondary-foreground: 220 14% 96%;
+    --secondary: 222 35% 20%;
+    --secondary-foreground: 220 20% 92%;
 
-    --muted: 222 47% 14%;
-    --muted-foreground: 220 9% 60%;
+    --muted: 222 35% 16%;
+    --muted-foreground: 220 15% 65%;
 
-    --accent: 24 95% 53%;
-    --accent-foreground: 222 47% 11%;
+    --accent: 24 85% 58%;
+    --accent-foreground: 222 47% 8%;
 
-    --destructive: 0 62% 30%;
-    --destructive-foreground: 220 14% 96%;
+    --destructive: 0 60% 45%;
+    --destructive-foreground: 220 20% 95%;
 
-    --border: 222 47% 16%;
-    --input: 222 47% 16%;
-    --ring: 24 95% 53%;
+    --border: 222 30% 20%;
+    --input: 222 30% 18%;
+    --ring: 24 85% 55%;
+
+    /* Dark mode sidebar - softer tones */
+    --sidebar-background: 222 45% 9%;
+    --sidebar-foreground: 220 20% 88%;
+    --sidebar-primary: 24 85% 55%;
+    --sidebar-primary-foreground: 222 47% 8%;
+    --sidebar-accent: 222 35% 16%;
+    --sidebar-accent-foreground: 220 20% 90%;
+    --sidebar-border: 222 30% 18%;
+    --sidebar-ring: 24 85% 55%;
+
+    /* Dark mode specific shadows */
+    --shadow-card: 0 2px 8px 0 rgb(0 0 0 / 0.3), 0 1px 3px -1px rgb(0 0 0 / 0.2);
+    --shadow-card-hover: 0 8px 20px -4px rgb(0 0 0 / 0.4), 0 4px 8px -4px rgb(0 0 0 / 0.3);
+    --shadow-glow-orange: 0 0 40px -10px hsl(24 85% 55% / 0.25);
   }
 }
 
@@ -125,38 +141,72 @@
 }
 
 @layer components {
-  /* KPI Card Styles */
+  /* KPI Card Styles - with glassmorphism in dark mode */
   .kpi-card {
-    @apply relative overflow-hidden rounded-xl bg-card p-6 shadow-[var(--shadow-card)] transition-all duration-300 hover:shadow-[var(--shadow-card-hover)] border border-border/50;
+    @apply relative overflow-hidden rounded-2xl bg-card p-6 shadow-[var(--shadow-card)] transition-all duration-300 hover:shadow-[var(--shadow-card-hover)] border border-border/40;
+  }
+
+  .dark .kpi-card {
+    @apply bg-card/80 backdrop-blur-xl border-white/5;
+    background: linear-gradient(135deg, hsl(222 40% 14% / 0.9) 0%, hsl(222 40% 11% / 0.95) 100%);
   }
 
   .kpi-card-highlight {
     @apply kpi-card border-l-4 border-l-secondary;
   }
 
+  .dark .kpi-card-highlight {
+    border-left-color: hsl(24 85% 55%);
+  }
+
   .kpi-value {
     @apply text-3xl font-bold tracking-tight text-foreground;
+  }
+
+  .dark .kpi-value {
+    @apply text-[hsl(220,20%,95%)];
   }
 
   .kpi-label {
     @apply text-sm font-medium text-muted-foreground;
   }
 
+  .dark .kpi-label {
+    @apply text-[hsl(220,15%,60%)];
+  }
+
   .kpi-trend-up {
     @apply inline-flex items-center gap-1 text-sm font-medium text-green-600;
+  }
+
+  .dark .kpi-trend-up {
+    @apply text-emerald-400;
   }
 
   .kpi-trend-down {
     @apply inline-flex items-center gap-1 text-sm font-medium text-destructive;
   }
 
-  /* Chart Container */
+  .dark .kpi-trend-down {
+    @apply text-red-400;
+  }
+
+  /* Chart Container - with glassmorphism in dark mode */
   .chart-container {
-    @apply rounded-xl bg-card p-6 shadow-[var(--shadow-card)] border border-border/50;
+    @apply rounded-2xl bg-card p-6 shadow-[var(--shadow-card)] border border-border/40;
+  }
+
+  .dark .chart-container {
+    @apply bg-card/80 backdrop-blur-xl border-white/5;
+    background: linear-gradient(135deg, hsl(222 40% 14% / 0.9) 0%, hsl(222 40% 11% / 0.95) 100%);
   }
 
   .chart-title {
     @apply text-lg font-semibold text-foreground mb-4;
+  }
+
+  .dark .chart-title {
+    @apply text-[hsl(220,20%,92%)];
   }
 
   /* Sidebar Brand */

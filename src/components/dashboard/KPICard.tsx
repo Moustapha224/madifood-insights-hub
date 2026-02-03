@@ -47,12 +47,16 @@ export function KPICard({
           )}
         </div>
         <div className={cn(
-          'p-3 rounded-xl',
-          highlight ? 'bg-secondary/10' : 'bg-muted'
+          'p-3 rounded-xl transition-all',
+          highlight 
+            ? 'bg-secondary/10 dark:bg-secondary/15' 
+            : 'bg-muted dark:bg-white/5'
         )}>
           <Icon className={cn(
             'w-6 h-6',
-            highlight ? 'text-secondary' : 'text-muted-foreground'
+            highlight 
+              ? 'text-secondary' 
+              : 'text-muted-foreground opacity-70 dark:opacity-60'
           )} />
         </div>
       </div>

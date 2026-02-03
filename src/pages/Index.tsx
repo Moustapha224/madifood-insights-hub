@@ -73,24 +73,26 @@ const Index = () => {
         )}
       >
         <div className="p-8">
-          {/* Header */}
-          <header className="mb-8 flex items-center justify-between">
-            <div className="flex items-center gap-4">
-              <img 
-                src={madifoodLogo} 
-                alt="MadiFood" 
-                className="h-12 object-contain"
-              />
-              <div>
-                <h1 className="text-2xl font-bold text-foreground">
-                  MadiFood
-                </h1>
-                <p className="text-muted-foreground text-sm">
-                  Tableau de bord analytique
-                </p>
+          {/* Header - Soft separation in dark mode */}
+          <header className="mb-8 pb-6 border-b border-border/30 dark:border-white/5">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-4">
+                <img 
+                  src={madifoodLogo} 
+                  alt="MadiFood" 
+                  className="h-14 object-contain drop-shadow-sm"
+                />
+                <div>
+                  <h1 className="text-2xl font-bold text-foreground tracking-tight">
+                    MadiFood Analytics
+                  </h1>
+                  <p className="text-muted-foreground text-sm mt-0.5">
+                    Vue analytique des performances commerciales et opérationnelles
+                  </p>
+                </div>
               </div>
+              <ThemeToggle />
             </div>
-            <ThemeToggle />
           </header>
 
           {/* Empty State */}
