@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { Navigate } from 'react-router-dom';
 import { 
   DollarSign, 
   ShoppingCart, 
@@ -6,7 +7,9 @@ import {
   Users,
   Store,
   TrendingUp,
-  FileSpreadsheet
+  FileSpreadsheet,
+  LogOut,
+  RefreshCw
 } from 'lucide-react';
 import { DashboardSidebar } from '@/components/dashboard/DashboardSidebar';
 import { MobileHeader } from '@/components/dashboard/MobileHeader';
@@ -15,12 +18,17 @@ import { KPICard } from '@/components/dashboard/KPICard';
 import { RevenueChart } from '@/components/dashboard/RevenueChart';
 import { OrdersChart } from '@/components/dashboard/OrdersChart';
 import { CustomerSegmentationChart } from '@/components/dashboard/CustomerSegmentationChart';
+import { ResetDatabaseButton } from '@/components/dashboard/ResetDatabaseButton';
+import { ImportStats } from '@/components/dashboard/ImportStats';
 import { ThemeToggle } from '@/components/ThemeToggle';
-import { useMadiFoodData } from '@/hooks/useMadiFoodData';
+import { Button } from '@/components/ui/button';
+import { useAuth } from '@/hooks/useAuth';
+import { useSupabaseData } from '@/hooks/useSupabaseData';
 import { cn } from '@/lib/utils';
 import madifoodLogo from '@/assets/madifood-logo.png';
 
 const Index = () => {
+  const { user, isAdmin, isLoading: authLoading, signOut } = useAuth();
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false);
   
@@ -29,6 +37,8 @@ const Index = () => {
     isLoading,
     error,
     uploadFile,
+    refreshData,
+    resetDatabase,
     dateRange,
     setDateRange,
     selectedRestaurants,
@@ -36,7 +46,21 @@ const Index = () => {
     kpis,
     monthlyData,
     availableRestaurants,
-  } = useMadiFoodData();
+    importStats,
+  } = useSupabaseData();
+
+  // Redirect to auth if not logged in
+  if (authLoading) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <div className="w-10 h-10 rounded-full border-2 border-secondary border-t-transparent animate-spin" />
+      </div>
+    );
+  }
+
+  if (!user) {
+    return <Navigate to="/auth" replace />;
+  }
 
   const formatCurrency = (value: number) => {
     if (value >= 1000000000) {
@@ -93,7 +117,7 @@ const Index = () => {
       <main 
         className={cn(
           'transition-all duration-300 min-h-screen',
-          'pt-16 lg:pt-0', // Add padding for mobile header
+          'pt-16 lg:pt-0',
           sidebarCollapsed ? 'lg:ml-16' : 'lg:ml-72'
         )}
       >
@@ -116,19 +140,58 @@ const Index = () => {
                   </p>
                 </div>
               </div>
-              <ThemeToggle />
+              <div className="flex items-center gap-3">
+                {importStats && <ImportStats stats={importStats} />}
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  onClick={refreshData}
+                  title="Actualiser les données"
+                  className="text-muted-foreground hover:text-foreground"
+                >
+                  <RefreshCw className={cn("w-4 h-4", isLoading && "animate-spin")} />
+                </Button>
+                <ResetDatabaseButton onReset={resetDatabase} isAdmin={isAdmin} />
+                <ThemeToggle />
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={signOut}
+                  className="gap-2 text-muted-foreground hover:text-foreground"
+                >
+                  <LogOut className="w-4 h-4" />
+                  <span className="hidden xl:inline">Déconnexion</span>
+                </Button>
+              </div>
             </div>
           </header>
 
           {/* Mobile Title */}
-          <div className="lg:hidden mb-6">
-            <h1 className="text-xl font-bold text-foreground tracking-tight">
-              MadiFood Analytics
-            </h1>
-            <p className="text-muted-foreground text-xs mt-0.5">
-              Vue analytique des performances
-            </p>
+          <div className="lg:hidden mb-6 flex items-center justify-between">
+            <div>
+              <h1 className="text-xl font-bold text-foreground tracking-tight">
+                MadiFood Analytics
+              </h1>
+              <p className="text-muted-foreground text-xs mt-0.5">
+                Vue analytique des performances
+              </p>
+            </div>
+            <div className="flex items-center gap-2">
+              <Button variant="ghost" size="icon" onClick={refreshData}>
+                <RefreshCw className={cn("w-4 h-4", isLoading && "animate-spin")} />
+              </Button>
+              <Button variant="ghost" size="icon" onClick={signOut}>
+                <LogOut className="w-4 h-4" />
+              </Button>
+            </div>
           </div>
+
+          {/* Import Stats on mobile */}
+          {importStats && (
+            <div className="lg:hidden mb-4">
+              <ImportStats stats={importStats} />
+            </div>
+          )}
 
           {/* Empty State */}
           {!data && !isLoading && (
@@ -141,12 +204,20 @@ const Index = () => {
               </h2>
               <p className="text-muted-foreground max-w-md mb-8">
                 Importez votre fichier Excel <strong>Madifood_DB.xlsx</strong> via la barre latérale 
-                pour visualiser vos données et KPIs en temps réel.
+                pour visualiser vos données et KPIs en temps réel. Les données sont persistées et cumulatives.
               </p>
               <div className="flex items-center gap-2 text-sm text-muted-foreground">
                 <TrendingUp className="w-4 h-4" />
-                <span>Analyse automatique • Graphiques interactifs • Filtres dynamiques</span>
+                <span>Analyse automatique • Données persistantes • Filtres dynamiques</span>
               </div>
+            </div>
+          )}
+
+          {/* Loading state */}
+          {isLoading && !data && (
+            <div className="flex flex-col items-center justify-center h-[60vh]">
+              <div className="w-10 h-10 rounded-full border-2 border-secondary border-t-transparent animate-spin mb-4" />
+              <p className="text-muted-foreground text-sm">Chargement des données...</p>
             </div>
           )}
 
