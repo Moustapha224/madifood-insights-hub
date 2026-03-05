@@ -14,16 +14,216 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      mf_orders: {
+        Row: {
+          created_at_date: string | null
+          created_at_time: string | null
+          customer_phone: string | null
+          delivery_fee: number | null
+          imported_at: string
+          order_id: string
+          payment_method: string | null
+          restaurant_id: string | null
+          restaurant_name: string | null
+          restaurant_phone: string | null
+          service_fee: number | null
+          status: string | null
+          sub_total: number | null
+          total: number | null
+          user_id: string | null
+          user_name: string | null
+        }
+        Insert: {
+          created_at_date?: string | null
+          created_at_time?: string | null
+          customer_phone?: string | null
+          delivery_fee?: number | null
+          imported_at?: string
+          order_id: string
+          payment_method?: string | null
+          restaurant_id?: string | null
+          restaurant_name?: string | null
+          restaurant_phone?: string | null
+          service_fee?: number | null
+          status?: string | null
+          sub_total?: number | null
+          total?: number | null
+          user_id?: string | null
+          user_name?: string | null
+        }
+        Update: {
+          created_at_date?: string | null
+          created_at_time?: string | null
+          customer_phone?: string | null
+          delivery_fee?: number | null
+          imported_at?: string
+          order_id?: string
+          payment_method?: string | null
+          restaurant_id?: string | null
+          restaurant_name?: string | null
+          restaurant_phone?: string | null
+          service_fee?: number | null
+          status?: string | null
+          sub_total?: number | null
+          total?: number | null
+          user_id?: string | null
+          user_name?: string | null
+        }
+        Relationships: []
+      }
+      mf_plats: {
+        Row: {
+          category: string | null
+          id: string
+          imported_at: string
+          name: string | null
+          price: number | null
+          restaurant_id: string | null
+          restaurant_name: string | null
+          time_to_cook: number | null
+        }
+        Insert: {
+          category?: string | null
+          id: string
+          imported_at?: string
+          name?: string | null
+          price?: number | null
+          restaurant_id?: string | null
+          restaurant_name?: string | null
+          time_to_cook?: number | null
+        }
+        Update: {
+          category?: string | null
+          id?: string
+          imported_at?: string
+          name?: string | null
+          price?: number | null
+          restaurant_id?: string | null
+          restaurant_name?: string | null
+          time_to_cook?: number | null
+        }
+        Relationships: []
+      }
+      mf_users: {
+        Row: {
+          created_at_date: string | null
+          created_at_time: string | null
+          email: string | null
+          firstname: string | null
+          id: string
+          imported_at: string
+          is_deleted: boolean | null
+          lastname: string | null
+          phone_number: string | null
+          profession: string | null
+          source: string | null
+          username: string | null
+        }
+        Insert: {
+          created_at_date?: string | null
+          created_at_time?: string | null
+          email?: string | null
+          firstname?: string | null
+          id: string
+          imported_at?: string
+          is_deleted?: boolean | null
+          lastname?: string | null
+          phone_number?: string | null
+          profession?: string | null
+          source?: string | null
+          username?: string | null
+        }
+        Update: {
+          created_at_date?: string | null
+          created_at_time?: string | null
+          email?: string | null
+          firstname?: string | null
+          id?: string
+          imported_at?: string
+          is_deleted?: boolean | null
+          lastname?: string | null
+          phone_number?: string | null
+          profession?: string | null
+          source?: string | null
+          username?: string | null
+        }
+        Relationships: []
+      }
+      mf_wallets: {
+        Row: {
+          balance: number | null
+          imported_at: string
+          last_updated: string | null
+          user_id: string
+        }
+        Insert: {
+          balance?: number | null
+          imported_at?: string
+          last_updated?: string | null
+          user_id: string
+        }
+        Update: {
+          balance?: number | null
+          imported_at?: string
+          last_updated?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
+      profiles: {
+        Row: {
+          created_at: string
+          email: string | null
+          full_name: string | null
+          id: string
+        }
+        Insert: {
+          created_at?: string
+          email?: string | null
+          full_name?: string | null
+          id: string
+        }
+        Update: {
+          created_at?: string
+          email?: string | null
+          full_name?: string | null
+          id?: string
+        }
+        Relationships: []
+      }
+      user_roles: {
+        Row: {
+          id: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Insert: {
+          id?: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Update: {
+          id?: string
+          role?: Database["public"]["Enums"]["app_role"]
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      has_role: {
+        Args: {
+          _role: Database["public"]["Enums"]["app_role"]
+          _user_id: string
+        }
+        Returns: boolean
+      }
     }
     Enums: {
-      [_ in never]: never
+      app_role: "admin" | "user"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -150,6 +350,8 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      app_role: ["admin", "user"],
+    },
   },
 } as const
