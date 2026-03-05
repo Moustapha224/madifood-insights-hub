@@ -21,10 +21,20 @@ interface UseSupabaseDataReturn {
   importStats: { users: number; orders: number; plats: number; wallets: number } | null;
 }
 
+// Helper to deduplicate rows by conflict column (keep last occurrence)
+function deduplicateRows(rows: Record<string, any>[], conflictCol: string): Record<string, any>[] {
+  const map = new Map<string, Record<string, any>>();
+  for (const row of rows) {
+    map.set(String(row[conflictCol]), row);
+  }
+  return Array.from(map.values());
+}
+
 // Helper to batch upserts in chunks
 async function batchUpsert(table: string, rows: Record<string, any>[], conflictCol: string, chunkSize = 500) {
-  for (let i = 0; i < rows.length; i += chunkSize) {
-    const chunk = rows.slice(i, i + chunkSize);
+  const uniqueRows = deduplicateRows(rows, conflictCol);
+  for (let i = 0; i < uniqueRows.length; i += chunkSize) {
+    const chunk = uniqueRows.slice(i, i + chunkSize);
     const { error } = await (supabase as any).from(table).upsert(chunk, { onConflict: conflictCol });
     if (error) throw new Error(`Erreur insertion ${table}: ${error.message}`);
   }
